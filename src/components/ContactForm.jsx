@@ -1,27 +1,44 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { nanoid } from 'nanoid';
-import propTypes from 'prop-types';
+// import { nanoid } from 'nanoid';
+// import propTypes from 'prop-types';
 import { MainForm, Button, Label, Input } from './GlobalStyle';
 
-export class ContactForm extends Component {
-  handleSubmit = ({ name, number }, { resetForm }) => {
-    const contact = { id: nanoid(), name, number };
-    this.props.onSubmit(contact);
-    resetForm();
-  };
+export const ContactForm = ({onSubmit}) => {
+  // const handleSubmit = ({ name, number }, { resetForm }) => {
+  //   const contact = { id: nanoid(), name, number };
+  //   this.props.onSubmit(contact);
+  //   resetForm();
+  // };
 
-  render() {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const onChangeName = e => setName(e.currentTarget.value);
+  const onChangeNumber = e => setNumber(e.currentTarget.value);
+
+    const handleSubmit = e => {
+      e.preventDefault();
+      onSubmit({ name, number });
+      reset();
+    };
+
+    const reset = () => {
+      setName('');
+      setNumber('');
+    };
+
+  // render() {
     return (
-      <Formik
-        initialValues={{ name: '', number: '' }}
-        onSubmit={this.handleSubmit}
-      >
-        <MainForm autoComplete="off">
+      <Formik initialValues={{ name: '', number: '' }} >
+        <MainForm autoComplete="off" onSubmit={handleSubmit}>
           <div>
             <Label htmlFor="name">Name</Label>
             <div>
               <Input
+                onChange={onChangeName}
+                value={name}
                 type="text"
                 name="name"
                 pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -34,6 +51,8 @@ export class ContactForm extends Component {
             <Label htmlFor="number">Number</Label>
             <div>
               <Input
+                onChange={onChangeNumber}
+                value={number}
                 type="tel"
                 name="number"
                 pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -47,9 +66,9 @@ export class ContactForm extends Component {
       </Formik>
     );
   }
-}
+// }
 
-ContactForm.propTypes = {
-  onSubmit: propTypes.func.isRequired,
-  contacts: propTypes.arrayOf(propTypes.object),
-};
+// ContactForm.propTypes = {
+//   onSubmit: propTypes.func.isRequired,
+//   contacts: propTypes.arrayOf(propTypes.object),
+// };

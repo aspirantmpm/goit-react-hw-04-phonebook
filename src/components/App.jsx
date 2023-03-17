@@ -7,7 +7,9 @@ import { ContactFind } from './ContactFind';
 import { Section, Title } from './GlobalStyle';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(() => {
+    return JSON.parse(localStorage.getItem('contacts')) ?? [];
+  });
   const [filter, setFilter] = useState('');
 
   // state = {
@@ -25,8 +27,8 @@ export const App = () => {
   };
 
   const deleteContact = contactId => {
-    setContacts(prevState =>
-      prevState.contacts.filter(contact => contact.id !== contactId)
+    setContacts(contacts =>
+      contacts.filter(contact => contact.id !== contactId)
     );
   };
 
@@ -35,7 +37,7 @@ export const App = () => {
   };
 
   const filterContacts = () => {
-    const { filter, contacts } = this.state;
+    // const { filter, contacts } = this.state;
     const normalizedFilter = filter.toLowerCase();
     return contacts.filter(({ name }) =>
       name.toLowerCase().includes(normalizedFilter)
@@ -58,6 +60,16 @@ export const App = () => {
   //   }
   // }
 
+  // useEffect(() => {
+  //   const savedContacts = localStorage.getItem('contacts');
+  //   if (savedContacts !== null) {
+  //     const parsedContacts = JSON.parse(savedContacts);
+  //     setContacts(parsedContacts);
+  //     return;
+  //   }
+  //   setContacts([]);
+  // }, [contacts]);
+
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
@@ -76,7 +88,7 @@ export const App = () => {
       <Title>Contacts</Title>
       <ContactFind onFilter={changeFilter} filter={filter} />
       <ContactList
-        filterContacts={filterContacts}
+        filterContacts={filterContacts()}
         deleteContact={deleteContact}
       />
     </Section>
